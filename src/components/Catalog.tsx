@@ -3,20 +3,22 @@ import { useDispatch } from "react-redux";
 import { Link, useParams, useRouteMatch } from "react-router-dom";
 import { Card, Row, Col, Breadcrumb, InputNumber, Button } from "antd";
 import { useTypedSelector } from "../redux/rootReducer";
+import { CartProductsType } from '../redux/appReducer'
+import { getСategories, getProducts } from '../redux/selectors'
 import { addProductToCart } from "../redux/actions";
 
 const Catalog: React.FC = () => {
   const dispatch = useDispatch();
   const { idCategory, idProduct } = useParams();
   const { url } = useRouteMatch();
-  const categories = useTypedSelector((state) => state.app.categories);
-  const products = useTypedSelector((state) => state.app.products);
-  const categoryTitle = categories.filter((cat) => cat.id === +idCategory);
-  const productTitle = products.filter((prod) => prod.id === +idProduct);
+  const categories = useTypedSelector(getСategories);
+  const products = useTypedSelector(getProducts);
+  const categoryTitle = categories.filter((cat: any) => cat.id === +idCategory);
+  const productTitle = products.filter((prod: any) => prod.id === +idProduct);
   const [countProduct, setCountProduct] = useState<number | undefined>(1);
 
   const RenderBreadcrumbs = () => {
-    if (~url.indexOf("category") && !~url.indexOf("product")) {
+    if (Boolean(url.indexOf("category")) && !Boolean(url.indexOf("product"))) {
       return (
         <Breadcrumb>
           <Breadcrumb.Item>
@@ -25,7 +27,7 @@ const Catalog: React.FC = () => {
           <Breadcrumb.Item>{categoryTitle[0].title}</Breadcrumb.Item>
         </Breadcrumb>
       );
-    } else if (~url.indexOf("category") && ~url.indexOf("product")) {
+    } else if (Boolean(url.indexOf("category")) && Boolean(url.indexOf("product"))) {
       return (
         <Breadcrumb>
           <Breadcrumb.Item>
@@ -44,10 +46,10 @@ const Catalog: React.FC = () => {
 
   const RenderProducts = (): any => {
     return products
-      .filter((product) => product.category_id === +idCategory)
-      .map((e) => {
+      .filter((product: CartProductsType) => product.category_id === +idCategory)
+      .map((e: CartProductsType) => {
         return (
-          <Col span={6} key={e.id}>
+          <Col xs={24} md={6} key={e.id}>
             <Link to={`/category/${idCategory}/product/${e.id}`}>
               <Card
                 className="product-card"
@@ -69,7 +71,7 @@ const Catalog: React.FC = () => {
   };
 
   const RenderCategories = (): any => {
-    return categories.map((e) => {
+    return categories.map((e: any) => {
       return (
         <Col span={8} key={e.id}>
           <Link to={`/category/${e.id}`}>
@@ -92,8 +94,8 @@ const Catalog: React.FC = () => {
 
   const RenderProduct = (): any => {
     return products
-      .filter((product) => product.id === +idProduct)
-      .map((e) => {
+      .filter((product: CartProductsType) => product.id === +idProduct)
+      .map((e: CartProductsType) => {
         return (
           <Row key={e.id} gutter={[0, 16]}>
             <Col className="product-image" span={15} offset={1}>
@@ -112,7 +114,7 @@ const Catalog: React.FC = () => {
                 max={e.quantity}
               />
               <Button onClick={() => addCardHandler(e)} type="primary">
-                Купить за {~~e.price} ₽
+                Купить за {Math.floor(e.price)} ₽
               </Button>
               <p style={{ marginTop: "1rem" }}>В наличии: {e.quantity}</p>
             </Col>
@@ -165,9 +167,9 @@ const Catalog: React.FC = () => {
   };
 
   const RenderContent = (): any => {
-    if (~url.indexOf("category") && !~url.indexOf("product")) {
+    if (Boolean(url.indexOf("category")) && !Boolean(url.indexOf("product"))) {
       return <RenderProducts />;
-    } else if (~url.indexOf("category") && ~url.indexOf("product")) {
+    } else if (Boolean(url.indexOf("category")) && Boolean(url.indexOf("product"))) {
       return <RenderProduct />;
     } else {
       return <RenderCategories />;
@@ -182,7 +184,7 @@ const Catalog: React.FC = () => {
   return (
     <>
       <Row>
-        <Col span={20} offset={2} style={{ marginTop: "2rem" }}>
+        <Col span={20} offset={2} className="breadcrumbs">
           <RenderBreadcrumbs />
         </Col>
       </Row>

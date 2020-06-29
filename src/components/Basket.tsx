@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { Button, Popover, Badge, List, InputNumber, Modal, Progress } from "antd";
 import { CloseOutlined } from '@ant-design/icons';
 import { useTypedSelector } from "../redux/rootReducer";
+import { getCartProducts } from '../redux/selectors'
+import { CartProductsType } from '../redux/appReducer'
 import { changeCountProductToCart, removeProductFromCart } from "../redux/actions";
 
 interface CartProductsTypes {
@@ -13,7 +15,7 @@ interface CartProductsTypes {
 
 const Basket: React.FC = () => {
   const dispatch = useDispatch();
-  const cartElements = useTypedSelector((state) => state.app.cartProducts);
+  const cartProducts = useTypedSelector(getCartProducts);
   const [cartProductsCountSum, setCartProductsCountSum] = useState<CartProductsTypes>();
   const [modalWindow, setModalWindow] = useState(false)
   const [basketVisible, setBasketVisible] = useState(false)
@@ -22,13 +24,13 @@ const Basket: React.FC = () => {
   useEffect(() => {
     let count = 0;
     let sum = 0;
-    cartElements.map((e) => {
+    cartProducts.forEach((e: any) => {
       count += e.count;
       sum += e.price * e.count;
       return null;
     });
     setCartProductsCountSum({ count, sum });
-  }, [cartElements]);
+  }, [cartProducts]);
 
   useEffect(() => {
     if (modalWindow) {
@@ -37,7 +39,7 @@ const Basket: React.FC = () => {
       }
       const intervalID = setInterval(() => {
         setProgress(progress + 1);
-      }, 20);
+      }, 6);
       return () => clearInterval(intervalID)
     } else {
       setProgress(0)
@@ -47,22 +49,22 @@ const Basket: React.FC = () => {
   const renderFooter = (
     <>
       <p>
-        Всего: {cartProductsCountSum?.count} шт. на сумму {~~cartProductsCountSum?.sum!} руб.
+        Всего: {cartProductsCountSum?.count} шт. на сумму {Math.floor(cartProductsCountSum?.sum!)} руб.
       </p>
       <Button onClick={() => showModalHandler()} type="primary">Оплатить</Button>
     </>
   );
 
   const contentBasket = () => {
-    if (!cartElements.length) {
+    if (!cartProducts.length) {
       return <div>В корзине нет товаров</div>;
     } else {
       return (
         <List
           footer={renderFooter}
-          dataSource={cartElements}
+          dataSource={cartProducts}
           className="cart-list"
-          renderItem={(item) => (
+          renderItem={(item: CartProductsType) => (
             <List.Item className="cart-list__item">
               <Link to={`/category/${item.category_id}/product/${item.id}`}>
                 {item.title}
@@ -73,12 +75,11 @@ const Basket: React.FC = () => {
                   value={item.count}
                   min={0}
                   max={item.quantity}
-                  onChange={(value) => onChangeCountHandlet(value, item)}
+                  onChange={(value: any) => onChangeCountHandler(value, item)}
                 />
                 &nbsp;шт.
                 <Button
                   onClick={() => dispatch(removeProductFromCart(item.id))}
-                  style={{marginLeft: '1rem'}}
                   shape="circle"
                   icon={<CloseOutlined />}
                 />
@@ -91,11 +92,11 @@ const Basket: React.FC = () => {
   };
 
   const RenderFinishOrderList = (): any => {
-    return cartElements.map((e) => (
+    return cartProducts.map((e: CartProductsType) => (
         <li key={e.id}>
           <Link to={`/category/${e.category_id}/product/${e.id}`}>{e.title}</Link>
           <span className="count">({e.count} шт.)</span>
-          <span className="price">{e.count * ~~e.price} Рублей</span>
+          <span className="price">{e.count * Math.floor(e.price)} Рублей</span>
         </li>
       )
     )
@@ -110,7 +111,7 @@ const Basket: React.FC = () => {
             <ul>
               <RenderFinishOrderList />
             </ul>
-            <span className="total">Всего {cartProductsCountSum?.count} шт. на сумму {~~cartProductsCountSum?.sum!} Рублей</span>
+            <span className="total">Всего {cartProductsCountSum?.count} шт. на сумму {Math.floor(cartProductsCountSum?.sum!)} Рублей</span>
           </div>
         )
         : null
@@ -118,7 +119,7 @@ const Basket: React.FC = () => {
     </>
   );
 
-  const onChangeCountHandlet = (value: any, item: any) => {
+  const onChangeCountHandler = (value: number, item: CartProductsType) => {
     const newCountBasketElement = { ...item, count: value };
     dispatch(changeCountProductToCart(newCountBasketElement));
   };
