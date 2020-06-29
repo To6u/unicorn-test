@@ -9497,6 +9497,16 @@ rc-textarea@^0.2.0, rc-textarea@~0.2.2:
     omit.js "^1.0.2"
     rc-resize-observer "^0.2.3"
 
+rc-textarea@^0.2.2:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/rc-textarea/-/rc-textarea-0.2.6.tgz#7a73c8da108b7593fb7bf40f8c0e945cf196ac80"
+  integrity sha512-eCVgLDBe2baurllr9gR9OjcDtMlKvt6hBKIJPbZZjH8BlasjLkpEisO7jdu5TINglZKoEo9nmcF/zh4Kk8o0Aw==
+  dependencies:
+    "@babel/runtime" "^7.10.1"
+    classnames "^2.2.1"
+    omit.js "^1.0.2"
+    rc-resize-observer "^0.2.3"
+
 rc-tooltip@^4.0.0, rc-tooltip@~4.2.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/rc-tooltip/-/rc-tooltip-4.2.1.tgz#c1a2d5017ee03a771a9301c0dfdb46dfdf8fef94"
