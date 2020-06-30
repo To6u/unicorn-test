@@ -18,7 +18,7 @@ const Catalog: React.FC = () => {
   const [countProduct, setCountProduct] = useState<number | undefined>(1);
 
   const RenderBreadcrumbs = () => {
-    if (Boolean(url.indexOf("category")) && !Boolean(url.indexOf("product"))) {
+    if (url.indexOf("category") > 0 && url.indexOf("product") < 0) {
       return (
         <Breadcrumb>
           <Breadcrumb.Item>
@@ -27,7 +27,7 @@ const Catalog: React.FC = () => {
           <Breadcrumb.Item>{categoryTitle[0].title}</Breadcrumb.Item>
         </Breadcrumb>
       );
-    } else if (Boolean(url.indexOf("category")) && Boolean(url.indexOf("product"))) {
+    } else if (url.indexOf("category") > 0 && url.indexOf("product") > 0) {
       return (
         <Breadcrumb>
           <Breadcrumb.Item>
@@ -167,9 +167,9 @@ const Catalog: React.FC = () => {
   };
 
   const RenderContent = (): any => {
-    if (Boolean(url.indexOf("category")) && !Boolean(url.indexOf("product"))) {
+    if (url.indexOf("category") > 0 && url.indexOf("product") < 0)  {
       return <RenderProducts />;
-    } else if (Boolean(url.indexOf("category")) && Boolean(url.indexOf("product"))) {
+    } else if (url.indexOf("category") > 0 && url.indexOf("product") > 0)  {
       return <RenderProduct />;
     } else {
       return <RenderCategories />;
