@@ -1,4 +1,8 @@
-import { ADD_PRODUCT, CHANGE_COUNT_TO_CART, REMOVE_PRODUCT_FROM_CART } from "./types";
+import {
+  ADD_PRODUCT,
+  CHANGE_COUNT_TO_CART,
+  REMOVE_PRODUCT_FROM_CART,
+} from "./types";
 import categories from "../categories.json";
 import products from "../items.json";
 
@@ -10,6 +14,8 @@ export interface CartProductsType {
   price: number;
   count: number;
 }
+
+export type CategoriesType = typeof categories;
 
 const initialState = {
   categories: [...categories],
@@ -54,7 +60,12 @@ export const appReducer = (
       return { ...state, cartProducts: newCartElements };
     }
     case REMOVE_PRODUCT_FROM_CART: {
-      return {...state, cartProducts: [...state.cartProducts.filter(item => item.id !== action.payload)]}
+      return {
+        ...state,
+        cartProducts: [
+          ...state.cartProducts.filter((item) => item.id !== action.payload),
+        ],
+      };
     }
     default:
       return state;
